@@ -24,7 +24,7 @@ if [ '!' -d /nix ]; then
 	source ~/.nix-profile/etc/profile.d/nix.sh
 fi
 
-sudo install -Dm644 secrets/nix.conf /etc/nix.conf
+[ -f secret/nix.conf ] && sudo install -Dm644 secrets/nix.conf /etc/nix.conf
 
 nix-build "${flags[@]}" -A ${BUILD_ATTR:-all}
 
