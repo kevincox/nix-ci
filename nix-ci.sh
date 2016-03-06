@@ -42,7 +42,7 @@ if [ -n "$DEPLOY" -a -f result-marathon ]; then
 		--data-binary @result-marathon
 		"$(cat secrets/marathon)/v2/apps"
 	)
-	[ -f secrets/marathon.ca.crt ] && args+=(--cert secrets/marathon.ca.crt)
+	[ -f secrets/marathon.ca.crt ] && args+=(--cacert secrets/marathon.ca.crt)
 	[ -f secrets/marathon.crt ]    && args+=(--cert secrets/marathon.crt)
 	[ -f secrets/marathon.key ]    && args+=(--key secrets/marathon.key)
 	curl "${args[@]}"
