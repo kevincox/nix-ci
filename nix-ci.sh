@@ -34,3 +34,11 @@ if [ -n "$DEPLOY" -a -f secrets/b2-bucket ]; then
 	backblaze-b2 authorize_account $(cat secrets/b2-cred)
 	b2-nix-cache $(cat secrets/b2-bucket) secrets/nix-cache-key
 fi
+
+if [ -n "$DEPLOY" -a -f result-marathon ];
+	cat result-marathon
+	curl --cert secret/marathon.crt --key secret/marathon.key \
+	     -X PUT \
+	     --data-binary @result-marathon \
+	     $(cat secrets/marathon)
+fi
