@@ -37,8 +37,13 @@ fi
 
 if [ -n "$DEPLOY" -a -f result-marathon ]; then
 	cat result-marathon
-	curl --cert secrets/marathon.crt --key secrets/marathon.key \
-	     -X PUT \
-	     --data-binary @result-marathon \
-	     "$(cat secrets/marathon)/v2/apps"
+	args=(
+		-X PUT
+		--data-binary @result-marathon
+		"$(cat secrets/marathon)/v2/apps"
+	)
+	[ -f secrets/marathon.ca.crt ] && args+=(--cert secrets/marathon.ca.crt)
+	[ -f secrets/marathon.crt ]    && args+=(--cert secrets/marathon.crt)
+	[ -f secrets/marathon.key ]    && args+=(--key secrets/marathon.key)
+	curl "${args[@]}"
 fi
