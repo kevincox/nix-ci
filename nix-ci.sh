@@ -6,7 +6,8 @@ if [ -n "$SECRETS_URL" ]; then
 	echo "# FETCHING SECRETS"
 	wget -O secrets.archive "$SECRETS_URL"
 	if [ -n "$SECRETS_KEY" ]; then
-		gpg -d --batch --passphrase-file <(echo "$SECRETS_KEY") -o secrets.archive secrets.archive
+		gpg -d --batch --passphrase-file <(echo "$SECRETS_KEY") -o secrets.archive-decrypted secrets.archive
+		mv secrets.archive-decrypted secrets.archive
 	fi
 	tar -xf secrets.archive
 fi
