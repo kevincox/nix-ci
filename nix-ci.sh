@@ -2,6 +2,15 @@
 
 set -ex
 
+if [ -n "$SECRETS_URL" ]; then
+	echo "# FETCHING SECRETS"
+	wget -O secrets.archive "$SECRETS_URL"
+	if [ -n "$SECRETS_KEY" ]; then
+		gpg --d --passphrase-fd <(echo "$SECRETS_KEY") -o secrets.archive secrets.archive
+	fi
+	tar -xf secrets.archive
+fi
+
 if [ -z "$DEPLOY" ]; then
 	flags=()
 else
@@ -12,15 +21,6 @@ if [ '!' -d /nix ]; then
 	echo "# INSTALLING NIX"
 	curl -fsS https://nixos.org/nix/install | bash
 	source ~/.nix-profile/etc/profile.d/nix.sh
-fi
-
-if [ -n "$SECRETS_URL" ]; then
-	echo "# FETCHING SECRETS"
-	wget -O secrets.archive "$SECRETS_URL"
-	if [ -n "$SECRETS_KEY" ]; then
-		gpg --d --passphrase-fd <(echo "$SECRETS_KEY") -o secrets.archive secrets.archive
-	fi
-	tar -xf secrets.archive
 fi
 
 sudo install -Dm644 secrets/nix.conf /etc/nix.conf
