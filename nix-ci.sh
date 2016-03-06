@@ -29,7 +29,7 @@ fi
 nix-build "${flags[@]}" -A ${BUILD_ATTR:-all}
 
 if [ -n "$DEPLOY" -a -f secrets/b2-bucket ]; then
-	nix-env -i /nix/store/515ldhb5mkwgw939x9ml61bbklibpk81-b2-nix-cache
+	nix-env -i /nix/store/zqjdi3frwj2372w7xfwibj3dwak08x32-b2-nix-cache
 	nix-env -iA nixpkgs.backblaze-b2
 	backblaze-b2 authorize_account $(cat secrets/b2-cred)
 	b2-nix-cache $(cat secrets/b2-bucket) secrets/nix-cache-key
