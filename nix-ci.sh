@@ -35,10 +35,10 @@ if [ -n "$DEPLOY" -a -f secrets/b2-bucket ]; then
 	b2-nix-cache $(cat secrets/b2-bucket) secrets/nix-cache-key
 fi
 
-if [ -n "$DEPLOY" -a -f result-marathon ];
+if [ -n "$DEPLOY" -a -f result-marathon ]; then
 	cat result-marathon
 	curl --cert secret/marathon.crt --key secret/marathon.key \
 	     -X PUT \
 	     --data-binary @result-marathon \
-	     $(cat secrets/marathon)
+	     "$(cat secrets/marathon)/v2/apps"
 fi
