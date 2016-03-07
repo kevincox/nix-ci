@@ -38,7 +38,7 @@ fi
 if [ -n "$DEPLOY" -a -f result-marathon ]; then
 	cat result-marathon
 	args=(
-		-f
+		-isS
 		-X PUT
 		'-HContent-Type: application/json'
 		--data-binary @result-marathon
@@ -47,5 +47,11 @@ if [ -n "$DEPLOY" -a -f result-marathon ]; then
 	[ -f secrets/marathon.ca.crt ] && args+=(--cacert secrets/marathon.ca.crt)
 	[ -f secrets/marathon.crt ]    && args+=(--cert secrets/marathon.crt)
 	[ -f secrets/marathon.key ]    && args+=(--key secrets/marathon.key)
-	curl "${args[@]}"
+	
+	# Make request.
+	r=$(curl "${args[@]}")
+	# Print response.
+	echo "$r"
+	# Fail unless status is 200
+	head -n1 <<<"$r" | grep -q 200
 fi
