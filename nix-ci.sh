@@ -38,7 +38,7 @@ fi
 if [ -n "$DEPLOY" -a -f result-marathon ]; then
 	cat result-marathon
 	args=(
-		-fsS
+		-f
 		-X PUT
 		'-HContent-Type: application/json'
 		--data-binary @result-marathon
