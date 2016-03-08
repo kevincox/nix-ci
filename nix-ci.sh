@@ -53,5 +53,5 @@ if [ -n "$DEPLOY" -a -f result-marathon ]; then
 	# Print response.
 	echo "$r"
 	# Fail unless status is 200
-	head -n1 <<<"$r" | grep -q 200
+	grep -q 'HTTP/[^ ]* 200 OK$' <<<"$r" 
 fi
