@@ -38,20 +38,16 @@ fi
 if [ -n "$DEPLOY" -a -f result-marathon ]; then
 	cat result-marathon
 	args=(
-		-isS
-		-X PUT
-		'-HContent-Type: application/json'
-		--data-binary @result-marathon
+		-O - --quiet --content-on-error
+		--method PUT
+		--header 'Content-Type: application/json'
+		--body-file result-marathon
 		"$(cat secrets/marathon)/v2/apps"
 	)
-	[ -f secrets/marathon.ca.crt ] && args+=(--cacert secrets/marathon.ca.crt)
-	[ -f secrets/marathon.crt ]    && args+=(--cert secrets/marathon.crt)
-	[ -f secrets/marathon.key ]    && args+=(--key secrets/marathon.key)
+	[ -f secrets/marathon.ca.crt ] && args+=(--ca-certificate secrets/marathon.ca.crt)
+	[ -f secrets/marathon.crt ]    && args+=(--certificate secrets/marathon.crt)
+	[ -f secrets/marathon.key ]    && args+=(--private-key secrets/marathon.key)
 	
 	# Make request.
-	r=$(curl "${args[@]}")
-	# Print response.
-	echo "$r"
-	# Fail unless status is 200
-	grep -q 'HTTP/[^ ]* 200 OK$' <<<"$r" 
+	wget "${args[@]}"
 fi
