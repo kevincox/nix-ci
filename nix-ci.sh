@@ -12,10 +12,12 @@ if [ -n "$SECRETS_URL" ]; then
 	tar -xf secrets.archive
 fi
 
-if [ -z "$DEPLOY" ]; then
-	flags=()
-else
-	flags=(-j2)
+flags=(
+	--fallback
+	--show-trace
+)
+if [ -n "$DEPLOY" ]; then
+	flags+=(-j2)
 fi
 
 if [ '!' -d /nix ]; then
@@ -23,6 +25,7 @@ if [ '!' -d /nix ]; then
 	curl -fsS https://nixos.org/nix/install | bash
 	source ~/.nix-profile/etc/profile.d/nix.sh
 fi
+nix-channel --update
 
 [ -f secrets/nix.conf ] && sudo install -Dm644 secrets/nix.conf /etc/nix/nix.conf
 
@@ -38,7 +41,7 @@ fi
 if [ -n "$DEPLOY" -a -f result-marathon ]; then
 	cat result-marathon
 	args=(
-		-O - --quiet --content-on-error
+		-o - --quiet --content-on-error
 		--method PUT
 		--header 'Content-Type: application/json'
 		--body-file result-marathon
