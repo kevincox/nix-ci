@@ -38,8 +38,11 @@ if [ -n "$DEPLOY" -a -f secrets/b2-bucket ]; then
 	b2-nix-cache $(cat secrets/b2-bucket) secrets/nix-cache-key
 fi
 
-if [ -n "$DEPLOY" -a -f result-marathon ]; then
-	cat result-marathon
+
+if [ -n "$DEPLOY" ] && \
+	nix-instantiate -E 'if import ./. ? marathon then [] else false'
+then
+	nix-build -A marathon -o result-marathon
 	args=(
 		-o - --quiet --content-on-error
 		--method PUT
