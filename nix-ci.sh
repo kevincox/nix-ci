@@ -29,7 +29,7 @@ nix-channel --update
 
 [ -f secrets/nix.conf ] && sudo install -Dm644 secrets/nix.conf /etc/nix/nix.conf
 
-nix-build "${flags[@]}" -A ${BUILD_ATTR:-all}
+nix-build "${flags[@]}"
 
 if [ -n "$DEPLOY" -a -f secrets/b2-bucket ]; then
 	nix-env -i /nix/store/vbdwzacckpazr734l6i0wdw83fkb5j0p-b2-nix-cache
