@@ -43,7 +43,7 @@ if [ -n "$DEPLOY" ] && \
 then
 	nix-build -A marathon -o result-marathon
 	args=(
-		-o - --quiet --content-on-error
+		-O - --quiet --content-on-error
 		--method PUT
 		--header 'Content-Type: application/json'
 		--body-file result-marathon
