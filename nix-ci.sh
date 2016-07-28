@@ -32,8 +32,8 @@ nix-channel --update
 nix-build "${flags[@]}"
 
 if [ -n "$DEPLOY" -a -f secrets/b2-bucket ]; then
-	nix-env -i /nix/store/ws6iiawx0pzlgq9kww0kjii2h8map34s-b2-nix-cache
-	nix-env -iA nixpkgs.backblaze-b2
+	nix-env -i /nix/store/ws6iiawx0pzlgq9kww0kjii2h8map34s-b2-nix-cache \
+	           /nix/store/gg74f48clgq3g647mv1cmkg391v55pc6-backblaze-b2-0.3.10
 	backblaze-b2 authorize_account $(cat secrets/b2-cred)
 	b2-nix-cache $(cat secrets/b2-bucket) secrets/nix-cache-key
 fi
