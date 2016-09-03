@@ -23,8 +23,8 @@ fi
 if [ '!' -d /nix ]; then
 	echo "# INSTALLING NIX"
 	curl -fsS https://nixos.org/nix/install | bash
-	source ~/.nix-profile/etc/profile.d/nix.sh
 fi
+source ~/.nix-profile/etc/profile.d/nix.sh
 nix-channel --update
 
 [ -f secrets/nix.conf ] && sudo install -Dm644 secrets/nix.conf /etc/nix/nix.conf
