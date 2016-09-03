@@ -29,6 +29,10 @@ nix-channel --update
 
 [ -f secrets/nix.conf ] && sudo install -Dm644 secrets/nix.conf /etc/nix/nix.conf
 
+if [ -n "$SETUP_ONLY" ]; then
+	exit 0
+fi
+
 nix-build "${flags[@]}"
 
 if [ -n "$DEPLOY" -a -f secrets/b2-bucket ]; then
