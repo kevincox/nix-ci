@@ -46,11 +46,17 @@ if [ -n "$DEPLOY" ] && \
 	nix-instantiate -E 'if import ./. ? marathon then [] else false'
 then
 	nix-build -A marathon -o result-marathon
+	
+	# Add closure size to disk requirement.
+	nix-env -i jq coreutils
+	cs=$(du -hsc -B1M $(nix-store -qR ./result-marathon) | tail -n1 | cut -f1)
+	jq ".[].disk += $cs" result-marathon > result-marathon-updated
+	
 	args=(
 		-O - --quiet --content-on-error
 		--method PUT
 		--header 'Content-Type: application/json'
-		--body-file result-marathon
+		--body-file result-marathon-updated
 		"$(cat secrets/marathon)/v2/apps"
 	)
 	[ -f secrets/marathon.ca.crt ] && args+=(--ca-certificate secrets/marathon.ca.crt)
