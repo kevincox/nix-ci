@@ -43,7 +43,7 @@ if [ -n "$DEPLOY" -a -f secrets/b2-bucket ]; then
 fi
 
 if [ -n "$DEPLOY" ] && \
-	nix-instantiate -E 'if import ./. ? marathon then [] else false'
+	nix-instantiate -E 'if import ./. ? marathon then [] else false' >&/dev/null
 then
 	nix-build -A marathon -o result-marathon
 	args=(
