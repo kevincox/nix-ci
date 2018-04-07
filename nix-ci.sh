@@ -65,5 +65,6 @@ fi
 
 if [ -n "$DEPLOY" ] && nix-property-defined docker; then
 	nix-build -A docker -o result-docker
-	docker push
+	image="$(nix eval --raw '(with (import ./.).docker; "${imageName}:${imageTag}")')"
+	docker push "$image"
 fi
