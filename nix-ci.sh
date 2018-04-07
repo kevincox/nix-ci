@@ -1,5 +1,9 @@
 #! /bin/bash
 
+nix-property-defined() {
+	nix-instantiate -E "if import ./. ? $1 then [] else false" >&/dev/null
+}
+
 set -ex
 
 if [ -n "$SECRETS_URL" ]; then
@@ -42,9 +46,7 @@ if [ -n "$DEPLOY" -a -f secrets/b2-bucket ]; then
 	b2-nix-cache $(cat secrets/b2-bucket) secrets/nix-cache-key
 fi
 
-if [ -n "$DEPLOY" ] && \
-	nix-instantiate -E 'if import ./. ? marathon then [] else false' >&/dev/null
-then
+if [ -n "$DEPLOY" ] && nix-property-defined marathon; then
 	nix-build -A marathon -o result-marathon
 	args=(
 		-O - --quiet --content-on-error
@@ -59,4 +61,9 @@ then
 	
 	# Make request.
 	wget "${args[@]}"
+fi
+
+if [ -n "$DEPLOY" ] && nix-property-defined docker; then
+	nix-build -A docker -o result-docker
+	docker push
 fi
