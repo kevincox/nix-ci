@@ -24,6 +24,9 @@ if [ -n "$DEPLOY" ]; then
 	flags+=(-j2)
 fi
 
+sudo mkdir -p /etc/nix
+sudo tee -a /etc/nix/nix.conf <<<'sandbox = false' >/dev/null
+
 if [ '!' -d /nix ]; then
 	echo "# INSTALLING NIX"
 	curl -fsS https://nixos.org/nix/install | bash
@@ -32,6 +35,7 @@ source ~/.nix-profile/etc/profile.d/nix.sh
 nix-channel --update
 
 [ -f secrets/nix.conf ] && sudo install -Dm644 secrets/nix.conf /etc/nix/nix.conf
+sudo tee -a /etc/nix/nix.conf <<<'sandbox = false' >/dev/null
 
 if [ -n "$SETUP_ONLY" ]; then
 	exit 0
